@@ -1,0 +1,212 @@
+
+{{response.files.append(URL(request.application,'static/fullcalendar',f='fullcalendar.css'))}}
+{{response.files.append(URL(request.application,'static/fullcalendar',f='fullcalendar.print.css'))}}
+{{response.files.append(URL(request.application,'static/fullcalendar',f='fullcalendar.min.js'))}}
+{{response.files.append(URL(request.application,'static/fullcalendar',f='gcal.js'))}}
+{{response.files.append(URL(request.application,'static/fullcalendar',f='jquery-ui.custom.min.js'))}}
+
+{{extend 'layout.html'}}
+<style>
+
+	.hover-end{padding:0;
+				margin:0;
+				font-size:75%;
+				text-align:center;
+				position:absolute;
+				bottom:0;
+				width:100%;
+				background-color: red;
+				opacity:100}
+	body {
+		margin-top: 20px;
+		text-align: center;
+		font-size: 12px;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		}
+	input[type=text], input[type=password], textarea, select {
+    	width: 120px;      
+		}	
+
+	#wrap {
+		width: 1100px;
+		margin: 0 auto;
+		display: inline;
+		}
+		
+	#external-events {
+		float: left;
+		display: inline;
+		width: 200px;
+		padding: 0 10px;
+		margin: 0 10px;
+		border: 1px solid #ccc;
+		background: #eee;
+		text-align: left;
+		}
+		
+	#external-events h4 {
+		font-size: 16px;
+		margin-top: 0;
+		padding-top: 1em;
+		}
+		
+	.external-event { /* try to mimick the look of a real event */
+		margin: 10px 0;
+		padding: 2px 4px;
+		background: #3366CC;
+		color: #fff;
+		font-size: .85em;
+		cursor: pointer;
+		}
+		
+	#external-events p {
+		margin: 1.5em 0;
+		font-size: 11px;
+		color: #666;
+		}
+		
+	#external-events p input {
+		margin: 0;
+		vertical-align: middle;
+		}
+
+	#calendar {
+		float: left;
+		width: 650px;
+		display: inline;
+		}
+
+</style>
+
+<h1>Control de citas </h1>
+{{=settings.title}}
+
+
+<div id='dialog'></div>
+<div id='wrap'>
+<div id='external-events'>
+  <h4>Agregue un cita</h4>
+ <div>{{=form}}</div>
+</div>
+ <div id='calendar'></div>
+ </div>
+
+<script type='text/javascript'>
+
+
+
+
+$(document).ready(function() {
+
+		/* initialize the external events
+		-----------------------------------------------------------------*/
+	
+		$('#external-events div.external-event').each(function() {
+		
+			// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+			// it doesn't need to have a start or end
+			var eventObject = {
+				title: $.trim($(this).text()) // use the element's text as the event title
+			};
+			
+			// store the Event Object in the DOM element so we can get to it later
+			$(this).data('eventObject', eventObject);
+			
+			// make the event draggable using jQuery UI
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,      // will cause the event to go back to its
+				revertDuration: 0  //  original position after the drag
+			});
+			
+		});
+
+
+	var calendar = $('#calendar');
+    $('#calendar').fullCalendar({
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,agendaWeek,agendaDay'
+			},
+			events:{
+			url: "{{=settings.google_cal}}",
+            className: 'gcal-event',           // an option!   
+            },
+			editable: true,
+			droppable: true, // this allows things to be dropped onto the calendar !!!
+			drop: function(date, allDay) { // this function is called when something is dropped
+			
+				// retrieve the dropped element's stored Event Object
+				var originalEventObject = $(this).data('eventObject');
+				
+				// we need to copy it, so that multiple events don't have a reference to the same object
+				var copiedEventObject = $.extend({}, originalEventObject);
+				
+				// assign it the date that was reported
+				copiedEventObject.start = date;
+				copiedEventObject.allDay = allDay;
+				
+				// render the event on the calendar
+				// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+				$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+
+				// is the "remove after drop" checkbox checked?
+				if ($('#drop-remove').is(':checked')) {
+					// if so, remove the element from the "Draggable Events" list
+					$(this).remove();
+				}
+				
+			},
+				/*
+			eventRender: function (event, element) {
+				console.log(event);
+				date=Date.parse(event._start)
+			//	date=date.getHours()
+				a="<a>Eliminar  " + event.id + "</p>"
+                element.find('.fc-event-inner').append("<a>Eliminar  " + event.id + "</p>");
+			//element.find('.fc-event-inner').html(event.title);
+                //if (event.innerHtml != null)
+                 //   element.find('.fc-event-inner').append(event.innerHtml);
+            },*/
+            eventMouseover: function(event, jsEvent, view) {
+               var a='<div id=\"'+event.id+'\" class=\"hover-end\">'+" <a href=\'#\' class=\'link\' onclick=\"elimina('"+event.id+"')\" </a>"+"'Eliminar</div>'"
+ 			   $('.fc-event-inner', this).append(a);
+ 			   setTimeout(function() {
+					$('#calendar').fullCalendar('updateEvent', event);
+					}, 10000);
+				},
+			eventMouseout: function(event, jsEvent, view) {
+    			$('#'+event.id).style.display('none');
+				},
+		       
+
+		});
+});
+
+            function elimina(id){
+                var elem = id;
+                //alert(id);
+                $.ajax({                	
+                    type: "GET",
+                    url: "{{=URL('default','delete_ajx')}}",
+                    data: "id="+id,
+                    dataType:"json",  
+                    success: function(data) {
+                	if ( console && console.log ) {
+						console.log( "Sample of data S:", data.slice( 0, 100 ) );
+						}			
+                    },
+                    error: function(data) {
+                    	if ( console && console.log ) {
+						console.log( "Sample of data E:", data);
+						window.location.href="{{=URL('default','index')}}";
+						}			
+                                              
+                     }					
+                });
+            }
+
+</script>
+ 
+

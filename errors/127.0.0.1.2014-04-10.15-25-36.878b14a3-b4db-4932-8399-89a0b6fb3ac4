@@ -1,0 +1,21 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.TypeError'> __init__() got an unexpected keyword argument 'width'"
+p3
+sS'layer'
+p4
+S'/home/wasuaje/Documentos/desarrollo/web2py6/applications/pycitas/controllers/default.py'
+p5
+sS'code'
+p6
+S'# -*- coding: utf-8 -*-\n### required - do no delete\ndef user(): return dict(form=auth())\ndef download(): return response.download(request,db)\ndef call():\n    session.forget()\n    return service()\n### end requires\ndef index():\n    form = SQLFORM.factory(\n        Field(\'Nombre\', requires=IS_NOT_EMPTY(),width=10),\n        Field(\'Email\',),\n        Field(\'Inicio\',\'datetime\'),\n        Field(\'Fin\',\'datetime\'),\n        \n        )\n    if form.process().accepted:\n        response.flash = \'form accepted\'\n        session.your_name = form.vars.your_name\n        session.your_image = form.vars.your_image\n    elif form.errors:\n        response.flash = \'form has errors\'\n\n    return dict(form=form)\n\n\ndef insert_ajx():\n    rest="POST https://www.googleapis.com/calendar/v3/calendars/%s/events" % settings.google_calid\n\ndef error():\n    return dict()\n\n@auth.requires_login()\ndef mymap():\n    rows=db(db.t_appointment.created_by==auth.user.id)(db.t_appointment.f_start_time>=request.now).select()\n    return dict(rows=rows)\n\n@auth.requires_login()\ndef mycal():\n    rows=db(db.t_appointment.created_by==auth.user.id).select()\n    return dict(rows=rows)\n\n@auth.requires_login()\ndef appointment_create():\n    form=crud.create(db.t_appointment,\n                     onvalidation=geocode2,\n                     next=\'appointment_read/[id]\')\n    return dict(form=form)\n\n@auth.requires_login()\ndef appointment_read():\n    record = db.t_appointment(request.args(0)) or redirect(URL(\'error\'))\n    form=crud.read(db.t_appointment,record)\n    return dict(form=form)\n\n@auth.requires_login()\ndef appointment_update():\n    record = db.t_appointment(request.args(0),active=True) or redirect(URL(\'error\'))\n    form=crud.update(db.t_appointment,record,next=\'appointment_read/[id]\',\n                     onvalidation=geocode2,\n                     ondelete=lambda form: redirect(URL(\'appointment_select\')),\n                     onaccept=crud.archive)\n    return dict(form=form)\n\n@auth.requires_login()\ndef appointment_select():\n    f,v=request.args(0),request.args(1)\n    query=f and db.t_appointment[f]==v or db.t_appointment\n    rows=db(query)(db.t_appointment.active==True).select()\n    return dict(rows=rows)\n\n@auth.requires_login()\ndef appointment_search():\n    form, rows=crud.search(db.t_appointment,query=db.t_appointment.active==True)\n    return dict(form=form, rows=rows)\n\nresponse._vars=response._caller(index)\n'
+p7
+sS'snapshot'
+p8
+(dp9
+sS'traceback'
+p10
+S'Traceback (most recent call last):\n  File "/home/wasuaje/Documentos/desarrollo/web2py6/gluon/restricted.py", line 220, in restricted\n    exec ccode in environment\n  File "/home/wasuaje/Documentos/desarrollo/web2py6/applications/pycitas/controllers/default.py", line 77, in <module>\n  File "/home/wasuaje/Documentos/desarrollo/web2py6/gluon/globals.py", line 385, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/wasuaje/Documentos/desarrollo/web2py6/applications/pycitas/controllers/default.py", line 11, in index\n    Field(\'Nombre\', requires=IS_NOT_EMPTY(),width=10),\nTypeError: __init__() got an unexpected keyword argument \'width\'\n'
+p11
+s.

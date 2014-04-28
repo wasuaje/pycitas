@@ -1,0 +1,8 @@
+{{extend 'layout.html'}}
+
+<h2>Read appointment</h2>
+{{=A(T('edit appointment'),_href=URL('appointment_update',args=request.args(0)))}}
+<br/>
+{{from gluon.debug import dbg}}
+{{=form}}
+{{for f in db.t_appointment._referenced_by:}}{{t=f.tablename}}{{if not t[-8:]=='_archive':}}[{{=A(t[2:],_href=URL('%s_select'%t[2:],args=(f.name,form.record.id)))}}]{{pass}}{{pass}}
