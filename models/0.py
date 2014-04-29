@@ -17,5 +17,5 @@ settings.email_login = ''
 settings.login_method = 'local'
 settings.login_config = ''
 settings.googlemap_key = 'ABQIAAAAT5em2PdsvF3z5onQpCqv0RTpH3CbXHjuCVmaTc5MkkU4wO1RRhQHEAKj2S9L72lEMpvNxzLVfJt6cg'
-settings.google_cal="https://www.google.com/calendar/feeds/terapiasholisticasdelser%40gmail.com/public/basic"
-settings.google_calid="terapiasholisticasdelser@gmail.com"
+settings.google_cal="https://www.google.com/calendar/feeds/your account/public/basic"
+settings.google_calid="youraccount@gmail.com"
