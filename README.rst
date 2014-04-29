@@ -2,7 +2,8 @@ Pycitas
 =======
 .. image:: pycitas.png
 
-Es un proyecto WEB2py (Python), que hace fork al appliance: _AppointmentManager: http://github.com/mdipierro/web2py-appliances/tree/master/AppointmentManager
+Es un proyecto WEB2py (Python), que hace fork al appliance: AppointmentManager_
+.. _AppointmentManager: http://github.com/mdipierro/web2py-appliances/tree/master/AppointmentManager
 
 Requiere:
 Una cuenta en gmail.
