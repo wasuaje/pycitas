@@ -31,8 +31,15 @@ Insertando Citas:
 -----------------
 .. image:: pycitas2.png
 
+::
+
+Llene los campos respectivos y presione submit
 
 
 Eliminando citas:
 -----------------
 .. image:: pycitas3.png
+
+::
+
+Coloque el mouse sobre el evento respectivo y click en eliminar.
