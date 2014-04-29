@@ -48,3 +48,11 @@ Eliminando citas:
 ::
 
  Coloque el mouse sobre el evento respectivo y click en eliminar.
+
+
+Ayuda:
+-----------------
+
+::
+
+ Comunicate conmigo a wasuaje@hotmail.com si tienes duda o encuentras problemas para implementarlo.
